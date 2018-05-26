@@ -1,8 +1,20 @@
 <template>
   <div class="home">
-    <v-carousel :hide-delimiters="true" :light="true" :lazy="true" class="primary" :cycle="false" style="height: 50vh; box-shadow: none;" v-model="progress">
-      <v-carousel-item v-for="translation in translations" :key="translation.id">
-        <v-container fluid fill-height style="padding: 0;">
+    <v-carousel
+      :hide-delimiters="true"
+      :light="true"
+      :lazy="true"
+      :cycle="false"
+      v-model="progress"
+      class="primary"
+      style="height: 50vh; box-shadow: none;">
+      <v-carousel-item
+        v-for="translation in translations"
+        :key="translation.id">
+        <v-container
+          fluid
+          fill-height
+          style="padding: 0;">
           <v-layout column>
             <v-flex class="locale">
               LV
@@ -16,7 +28,10 @@
                 {{ translation.en }}
               </span>
               <span v-else>
-                <v-btn icon color="white" @click="translation.showAnswer = true">
+                <v-btn
+                  icon
+                  color="white"
+                  @click="translation.showAnswer = true">
                   <v-icon>remove_red_eye</v-icon>
                 </v-btn>
               </span>
@@ -30,7 +45,10 @@
 
 <script>
 export default {
-  name: 'home',
+  name: 'Home',
+  data () {
+    return {}
+  },
   computed: {
     translations () {
       return this.$store.getters.uncompletedTranslations
@@ -45,9 +63,6 @@ export default {
         this.$store.dispatch('updateProgress', newValue)
       }
     }
-  },
-  data () {
-    return {}
   }
 }
 </script>

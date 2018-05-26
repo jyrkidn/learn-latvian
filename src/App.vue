@@ -1,11 +1,20 @@
 <template>
-  <v-app id="app" class="primary">
-    <vue-progress-bar></vue-progress-bar>
-    <v-toolbar flat extended class="primary">
-      <v-spacer></v-spacer>
+  <v-app
+    id="app"
+    class="primary">
+    <vue-progress-bar/>
+    <v-toolbar
+      flat
+      extended
+      class="primary">
+      <v-spacer/>
       <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn flat to="/">Home</v-btn>
-        <v-btn flat to="/overview">Overview</v-btn>
+        <v-btn
+          flat
+          to="/">Home</v-btn>
+        <v-btn
+          flat
+          to="/overview">Overview</v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <router-view/>
@@ -22,13 +31,13 @@ export default {
       'progressPercentage'
     ])
   },
-  created () {
-    this.$Progress.set(this.progressPercentage)
-  },
   watch: {
     progressPercentage (value) {
       this.$Progress.set(value)
     }
+  },
+  created () {
+    this.$Progress.set(this.progressPercentage)
   }
 }
 </script>
