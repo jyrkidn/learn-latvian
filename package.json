@@ -9,8 +9,11 @@
   },
   "dependencies": {
     "material-design-icons-iconfont": "^3.0.3",
+    "normalize.css": "^8.0.0",
     "register-service-worker": "^1.0.0",
     "vue": "^2.5.16",
+    "vue-carousel": "^0.7.3",
+    "vue-flickity": "^1.1.2",
     "vue-progressbar": "^0.7.5",
     "vue-router": "^3.0.1",
     "vuetify": "^1.0.18",

@@ -1,122 +1,112 @@
 <template>
-  <div class="home">
-    <v-carousel
-      :hide-delimiters="true"
-      :light="true"
-      :lazy="true"
-      :cycle="false"
-      v-model="progress"
-      class="primary"
-      style="height: 50vh; box-shadow: none;">
-      <v-carousel-item
+  <main>
+    <flickity
+      ref="flickity"
+      :options="flickityOptions"
+    >
+      <PlayItem
         v-for="translation in translations"
-        :key="translation.id">
-        <v-container
-          fluid
-          fill-height
-          style="padding: 0;">
-          <v-layout column>
-            <v-flex class="locale">
-              LV
-            </v-flex>
-            <v-flex class="word">
-              {{ translation.lv }}
-            </v-flex>
-            <v-flex class="translation">
-              {{ !!translation.showAnswer }}
-              <span v-if="translation.showAnswer">
-                {{ translation.en }}
-              </span>
-              <span v-else>
-                <v-btn
-                  icon
-                  color="white"
-                  @click="translation.showAnswer = true">
-                  <v-icon>remove_red_eye</v-icon>
-                </v-btn>
-              </span>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-carousel-item>
-    </v-carousel>
-  </div>
+        :key="translation.id"
+        :translation="translation"
+        class="carousel-cell" />
+    </flickity>
+    <icon-button
+      v-if="selectedIndex > 0"
+      class="carousel-btn carousel-prev btn-link big"
+      @click="previous()"
+    >
+      <previous-icon class="big" />
+    </icon-button>
+    <icon-button
+      v-if="selectedIndex !== translations.length - 1"
+      class="carousel-btn carousel-next btn-link big"
+      @click="next()"
+    >
+      <next-icon class="big" />
+    </icon-button>
+  </main>
 </template>
 
 <script>
+import Flickity from 'vue-flickity'
+import PlayItem from '@/components/PlayItem'
+import { PreviousIcon, NextIcon } from '@/components/icons'
+import IconButton from '@/components/IconButton'
+
 export default {
   name: 'Home',
+  components: {
+    Flickity,
+    PlayItem,
+    IconButton,
+    PreviousIcon,
+    NextIcon
+  },
   data () {
-    return {}
+    return {
+      flickityOptions: {
+        initialIndex: 0,
+        prevNextButtons: false,
+        pageDots: false,
+        setGallerySize: false
+      },
+      selectedIndex: 0
+    }
   },
   computed: {
     translations () {
-      return this.$store.getters.uncompletedTranslations
+      return this.shuffle(this.$store.getters.uncompletedTranslations)
+    }
+  },
+  mounted () {
+    this.$store.dispatch('updateProgress', this.$refs.flickity.selectedIndex())
+    this.$refs.flickity.on('select', () => {
+      this.selectedIndex = this.$refs.flickity.selectedIndex()
+      this.$store.dispatch('updateProgress', this.selectedIndex)
+    })
+  },
+  methods: {
+    next () {
+      this.$refs.flickity.next()
     },
-    progress: {
-      // getter
-      get () {
-        return this.$store.state.progress
-      },
-      // setter
-      set (newValue) {
-        this.$store.dispatch('updateProgress', newValue)
-      }
+
+    previous () {
+      this.$refs.flickity.previous()
     }
   }
 }
 </script>
 
-<style lang="scss">
-.carousel {
-  padding: 0;
+<style lang="scss" scoped>
+main {
+  justify-self: center;
+  align-self: center;
+  width: 100vw;
+  height: 100%;
 }
-.carousel__left, .carousel__right {
-  .theme--light.btn, .theme--light .btn {
-    color: #9E1B34;
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  &.carousel-prev {
+    left: 0;
+  }
+  &.carousel-next {
+    right: 0;
   }
 }
-.layout {
-  // align-items: center;
-}
+</style>
 
-.flex {
-  width: 100vw;
-}
+<style lang="scss">
+main {
+  .flickity-enabled {
+    height: 100%;
 
-.locale, .translation {
-  color: #ffffff;
-}
-
-.locale {
-  font-weight: 600;
-  font-size: 2em;
-  padding-left: 5px;
-  // display: flex;
-  // align-items: flex-end;
-  // justify-content: flex-start;
-  // text-transform: uppercase;
-  // flex: 1;
-}
-
-.word {
-  background: #ffffff;
-  color: #9E1B34;
-  // margin: 0 auto;
-
-  // justify-content: center;
-  // align-items: center;
-  // word-wrap: break-word;
-  // font-size: 6vw;
-
-  // flex: 3;
-}
-
-.translation {
-  flex: 1;
-
-  .btn .btn__content .icon {
-    color: #9E1B34;
+    .carousel-cell {
+      width: 100vw;
+    }
   }
 }
 </style>

@@ -1,34 +1,50 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="translations"
-    hide-actions
-  >
-    <template
-      slot="items"
-      slot-scope="props">
-      <td>{{ props.item.lv }}</td>
-      <td>{{ props.item.en }}</td>
-      <td>
-        <v-icon
-          v-if="props.item.completed"
-          color="primary">check</v-icon>
-        <v-icon v-else>close</v-icon>
-      </td>
-    </template>
-  </v-data-table>
+  <main>
+
+    <table>
+      <thead>
+        <tr>
+          <th>
+            Latvian
+          </th>
+          <th>
+            English
+          </th>
+          <th>
+            Completed
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="translation in translations"
+          :key="translation.id">
+          <td>
+            {{ translation.lv }}
+          </td>
+          <td>
+            {{ translation.en }}
+          </td>
+          <td>
+            <check-icon v-if="translation.completed" />
+            <close-icon v-else />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
 </template>
 
 <script>
+import { CheckIcon, CloseIcon } from '@/components/icons'
+
 export default {
+  components: {
+    CheckIcon,
+    CloseIcon
+  },
   data () {
-    return {
-      headers: [
-        { text: 'Latvian', value: 'lv' },
-        { text: 'English', value: 'en' },
-        { text: 'Completed', value: 'completed' }
-      ]
-    }
+    return {}
   },
   computed: {
     translations () {
@@ -38,6 +54,8 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
-
+<style lang="scss" scoped>
+main {
+  width: 100vw;
+}
 </style>

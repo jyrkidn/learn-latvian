@@ -2,20 +2,19 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import Vuetify from 'vuetify'
 import VueProgressBar from 'vue-progressbar'
 
 import './registerServiceWorker'
 
-import 'vuetify/dist/vuetify.min.css'
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
-import './assets/main.scss'
+import './assets/styles/main.scss'
 
-Vue.use(Vuetify, {
-  theme: {
-    primary: '#9E1B34',
-    secondary: '#ffffff',
-    accent: '#77353D'
+Vue.mixin({
+  methods: {
+    shuffle (items) {
+      for (var j, x, i = items.length; i; j = parseInt(Math.random() * i), x = items[--i], items[i] = items[j], items[j] = x);
+
+      return items
+    }
   }
 })
 
