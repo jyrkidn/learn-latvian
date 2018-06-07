@@ -2,8 +2,10 @@
   <div class="group">
     <input
       :value="value"
+      required
       type="text"
-      required>
+      @input="$emit('input', $event.target.value)"
+    >
     <span class="highlight" />
     <span class="bar" />
     <label>
@@ -22,7 +24,6 @@ export default {
     },
     value: {
       type: String,
-      required: true,
       default: ''
     }
   }

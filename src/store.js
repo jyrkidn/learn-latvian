@@ -28,14 +28,22 @@ const state = {
 }
 
 const mutations = {
-  updateProgress (state, progress) {
+  UPDATE_PROGRESS (state, progress) {
     state.progress = progress
+  },
+  ADD_TRANSLATION (state, translation) {
+    Vue.set(state.translations, translation.id, translation)
   }
 }
 
 const actions = {
   updateProgress ({commit}, progress) {
-    commit('updateProgress', progress)
+    commit('UPDATE_PROGRESS', progress)
+  },
+  addTranslation ({commit}, translation) {
+    translation.id = Object.keys(state.translations).length + 1
+    translation.completed = false
+    commit('ADD_TRANSLATION', translation)
   }
 }
 

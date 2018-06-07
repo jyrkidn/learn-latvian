@@ -1,111 +1,183 @@
 <template>
-  <main>
-    <flickity
-      ref="flickity"
-      :options="flickityOptions"
-    >
-      <PlayItem
-        v-for="translation in translations"
-        :key="translation.id"
-        :translation="translation"
-        class="carousel-cell" />
-    </flickity>
-    <icon-button
-      v-if="selectedIndex > 0"
-      class="carousel-btn carousel-prev btn-link big"
-      @click="previous()"
-    >
-      <previous-icon class="big" />
-    </icon-button>
-    <icon-button
-      v-if="selectedIndex !== translations.length - 1"
-      class="carousel-btn carousel-next btn-link big"
-      @click="next()"
-    >
-      <next-icon class="big" />
-    </icon-button>
-  </main>
+  <div class="home">
+    <main>
+      <swiper :options="swiperOption">
+        <swiper-slide
+          v-for="translation in translations"
+          :key="translation.id"
+        >
+          <PlayItem
+            :translation="translation"
+            class="carousel-cell" />
+        </swiper-slide>
+        <div
+          slot="pagination"
+          class="swiper-pagination" />
+        <div
+          slot="button-prev"
+          class="swiper-button-prev" />
+        <div
+          slot="button-next"
+          class="swiper-button-next" />
+      </swiper>
+    </main>
+    <footer>
+      <icon-button @click="setCompleted">
+        <check-icon />
+      </icon-button>
+      <icon-button @click="editTranslation">
+        <pencil-icon />
+      </icon-button>
+      <icon-button @click="addTranslation">
+        <plus-icon />
+      </icon-button>
+      <icon-button @click="redraw">
+        <refresh-icon />
+      </icon-button>
+      <icon-button @click="deleteTranslation">
+        <trash-icon />
+      </icon-button>
+    </footer>
+    <translation-dialog
+      v-if="addTranslationData.opened"
+      v-model="addTranslationData.value"
+      :opened="addTranslationData.opened"
+      @cancel="cancelAddTranslation"
+      @submit="submitAddTranslation"
+    />
+  </div>
 </template>
 
 <script>
-import Flickity from 'vue-flickity'
+import { mapGetters } from 'vuex'
 import PlayItem from '@/components/PlayItem'
-import { PreviousIcon, NextIcon } from '@/components/icons'
 import IconButton from '@/components/IconButton'
+import 'swiper/dist/css/swiper.css'
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
+import { CheckIcon, PencilIcon, PlusIcon, RefreshIcon, TrashIcon } from '@/components/icons'
+import TranslationDialog from '@/components/Dialog'
 
 export default {
   name: 'Home',
   components: {
-    Flickity,
+    swiper,
+    swiperSlide,
     PlayItem,
     IconButton,
-    PreviousIcon,
-    NextIcon
+    CheckIcon,
+    PencilIcon,
+    PlusIcon,
+    RefreshIcon,
+    TrashIcon,
+    TranslationDialog
   },
   data () {
     return {
-      flickityOptions: {
-        initialIndex: 0,
-        prevNextButtons: false,
-        pageDots: false,
-        setGallerySize: false
+      translations: [],
+      swiperOption: {
+        pagination: {
+          el: '.swiper-pagination',
+          type: 'progressbar'
+        },
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev'
+        }
       },
-      selectedIndex: 0
+      addTranslationData: {
+        opened: false,
+        value: {
+          lv: '',
+          en: ''
+        }
+      }
     }
   },
   computed: {
-    translations () {
-      return this.shuffle(this.$store.getters.uncompletedTranslations)
+    ...mapGetters([
+      'uncompletedTranslations'
+    ])
+  },
+  watch: {
+    uncompletedTranslations (data) {
+      console.log(data)
+      this.translations = data
     }
   },
-  mounted () {
-    this.$store.dispatch('updateProgress', this.$refs.flickity.selectedIndex())
-    this.$refs.flickity.on('select', () => {
-      this.selectedIndex = this.$refs.flickity.selectedIndex()
-      this.$store.dispatch('updateProgress', this.selectedIndex)
-    })
+  created () {
+    this.translations = this.shuffle(this.uncompletedTranslations)
   },
   methods: {
-    next () {
-      this.$refs.flickity.next()
+    setCompleted () {
+      console.log('setCompleted')
     },
-
-    previous () {
-      this.$refs.flickity.previous()
+    editTranslation () {
+      console.log('editTranslation')
+    },
+    addTranslation (value) {
+      this.addTranslationData.opened = true
+      console.log('addTranslation', value)
+    },
+    cancelAddTranslation () {
+      this.addTranslationData.opened = false
+    },
+    submitAddTranslation () {
+      this.addTranslationData.opened = false
+      this.$store.dispatch('addTranslation', this.addTranslationData.value)
+      this.addTranslationData.value = {
+        lv: '',
+        en: ''
+      }
+    },
+    redraw () {
+      this.translations = this.shuffle(this.translations)
+      console.log('redraw', this.translations[0].lv)
+    },
+    deleteTranslation () {
+      console.log('deleteTranslation')
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-main {
-  justify-self: center;
-  align-self: center;
-  width: 100vw;
+.home {
   height: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  grid-template-columns: 100%;
 }
 
-.carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-
-  &.carousel-prev {
-    left: 0;
-  }
-  &.carousel-next {
-    right: 0;
-  }
+footer {
+  justify-self: end;
+  padding: 1rem;
 }
 </style>
 
 <style lang="scss">
-main {
-  .flickity-enabled {
-    height: 100%;
+@import '../assets/styles/variables';
 
-    .carousel-cell {
-      width: 100vw;
+main {
+  .swiper-container {
+    height: 100%;
+  }
+  .swiper-button-prev {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27 44'%3E%3Cpath d='M0 22L22 0l2.1 2.1L4.2 22l19.9 19.9L22 44 0 22z' fill='%239E1834'/%3E%3C/svg%3E");
+  }
+  .swiper-button-next {
+    background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27 44'%3E%3Cpath d='M27 22L5 44l-2.1-2.1L22.8 22 2.9 2.1 5 0l22 22z' fill='%239E1834'/%3E%3C/svg%3E");
+  }
+  .swiper-button-disabled {
+    display: none;
+  }
+  .swiper-pagination-progressbar {
+    background: none;
+    height: 2px;
+    position: fixed;
+    top: 0px;
+
+    .swiper-pagination-progressbar-fill {
+      background: $secondary;
     }
   }
 }

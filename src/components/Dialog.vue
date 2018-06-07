@@ -7,8 +7,7 @@
       class="dialog"
     >
       <form
-        method="dialog"
-        @submit="submit"
+        @submit.prevent="submit"
       >
         <section>
           <input-field
@@ -25,6 +24,7 @@
             :squared="false"
             class="btn-link"
             type="reset"
+            @click="cancel"
           >
             Cancel
           </icon-button>
@@ -63,9 +63,11 @@ export default {
   },
   methods: {
     submit () {
-      console.log(this.value)
-
       this.$emit('val', this.value)
+      this.$emit('submit')
+    },
+    cancel () {
+      this.$emit('cancel')
     }
   }
 }
@@ -75,13 +77,9 @@ export default {
 @import '../assets/styles/variables';
 
 .dialog-wrapper {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 10px;
-  grid-auto-rows: 200px;
-  grid-template-areas:
-    ". a a ."
-    ". a a .";
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   width: 100%;
   height: 100%;
@@ -90,21 +88,32 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
 
   .dialog {
-    grid-area: a;
-    align-self: center;
-    justify-self: center;
+    width: 90%;
+    height: 90%;
     background: $secondary;
     color: $primary;
     padding: 2em;
 
-    .footer {
+    form {
+      height: 100%;
+      width: 100%;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-auto-rows: 2em;
-      grid-gap: .5em;
+      grid-template-rows: 1fr auto;
+      grid-template-columns: 100%;
 
-      button {
-        justify-self: center;
+      section {
+        align-self: center;
+      }
+
+      .footer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 2em;
+        grid-gap: .5em;
+
+        button {
+          justify-self: center;
+        }
       }
     }
   }

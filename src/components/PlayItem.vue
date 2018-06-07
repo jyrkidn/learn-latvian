@@ -50,6 +50,7 @@ export default {
 
 <style lang="scss">
 .play-item {
+  width: 100%;
   min-height: 100%;
   display: grid;
   grid-template-rows: 0.33fr 0.33fr 0.33fr;
