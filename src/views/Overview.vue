@@ -37,6 +37,7 @@
 
 <script>
 import { CheckIcon, CloseIcon } from '@/components/icons'
+import { getTranslations } from '../db'
 
 export default {
   components: {
@@ -44,12 +45,12 @@ export default {
     CloseIcon
   },
   data () {
-    return {}
-  },
-  computed: {
-    translations () {
-      return Object.values(this.$store.state.translations)
+    return {
+      translations: []
     }
+  },
+  async mounted () {
+    this.translations = await getTranslations()
   }
 }
 </script>

@@ -1,7 +1,10 @@
 <template>
   <div class="home">
     <main>
-      <swiper :options="swiperOption">
+      <swiper
+        ref="homeSwiper"
+        :options="swiperOption"
+      >
         <swiper-slide
           v-for="translation in translations"
           :key="translation.id"
@@ -31,31 +34,28 @@
       <icon-button @click="addTranslation">
         <plus-icon />
       </icon-button>
-      <icon-button @click="redraw">
-        <refresh-icon />
-      </icon-button>
       <icon-button @click="deleteTranslation">
         <trash-icon />
       </icon-button>
     </footer>
     <translation-dialog
-      v-if="addTranslationData.opened"
-      v-model="addTranslationData.value"
-      :opened="addTranslationData.opened"
-      @cancel="cancelAddTranslation"
-      @submit="submitAddTranslation"
+      v-if="translationData.opened"
+      v-model="translationData.value"
+      :opened="translationData.opened"
+      @cancel="translationData.opened = false"
+      @submit="submitTranslation"
     />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import PlayItem from '@/components/PlayItem'
 import IconButton from '@/components/IconButton'
 import 'swiper/dist/css/swiper.css'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
-import { CheckIcon, PencilIcon, PlusIcon, RefreshIcon, TrashIcon } from '@/components/icons'
+import { CheckIcon, PencilIcon, PlusIcon, TrashIcon } from '@/components/icons'
 import TranslationDialog from '@/components/Dialog'
+import { getUncompletedTranslations, updateTranslation, deleteTranslation } from '../db'
 
 export default {
   name: 'Home',
@@ -67,7 +67,6 @@ export default {
     CheckIcon,
     PencilIcon,
     PlusIcon,
-    RefreshIcon,
     TrashIcon,
     TranslationDialog
   },
@@ -84,57 +83,64 @@ export default {
           prevEl: '.swiper-button-prev'
         }
       },
-      addTranslationData: {
+      translationData: {
         opened: false,
         value: {
+          id: null,
           lv: '',
           en: ''
         }
       }
     }
   },
-  computed: {
-    ...mapGetters([
-      'uncompletedTranslations'
-    ])
-  },
-  watch: {
-    uncompletedTranslations (data) {
-      console.log(data)
-      this.translations = data
-    }
-  },
-  created () {
-    this.translations = this.shuffle(this.uncompletedTranslations)
+  computed: {},
+  async mounted () {
+    this.translations = await getUncompletedTranslations()
   },
   methods: {
-    setCompleted () {
-      console.log('setCompleted')
+    async setCompleted () {
+      const translation = this.getCurrentTranslation()
+      translation.completed = true
+      await updateTranslation(translation)
+      this.translations.splice(this.$refs.homeSwiper.swiper.activeIndex, 1)
     },
     editTranslation () {
-      console.log('editTranslation')
+      const translation = this.getCurrentTranslation()
+      this.translationData.value.id = translation.id
+      this.translationData.value.lv = translation.lv
+      this.translationData.value.en = translation.en
+      this.translationData.opened = true
     },
-    addTranslation (value) {
-      this.addTranslationData.opened = true
-      console.log('addTranslation', value)
-    },
-    cancelAddTranslation () {
-      this.addTranslationData.opened = false
-    },
-    submitAddTranslation () {
-      this.addTranslationData.opened = false
-      this.$store.dispatch('addTranslation', this.addTranslationData.value)
-      this.addTranslationData.value = {
+    async submitTranslation () {
+      this.translationData.opened = false
+
+      const payload = await updateTranslation(this.translationData.value)
+
+      const index = this.translations.findIndex(translation => translation.id === payload.id)
+
+      if (index === -1) {
+        this.translations.push(payload)
+      } else {
+        this.translations[index] = Object.assign(this.translations[index], payload)
+      }
+
+      this.translationData.value = {
+        id: null,
         lv: '',
         en: ''
       }
     },
-    redraw () {
-      this.translations = this.shuffle(this.translations)
-      console.log('redraw', this.translations[0].lv)
+    addTranslation (value) {
+      this.translationData.opened = true
     },
-    deleteTranslation () {
-      console.log('deleteTranslation')
+    async deleteTranslation () {
+      const translation = this.getCurrentTranslation()
+
+      await deleteTranslation(translation.id)
+      this.translations.splice(this.$refs.homeSwiper.swiper.activeIndex, 1)
+    },
+    getCurrentTranslation () {
+      return this.translations[this.$refs.homeSwiper.swiper.activeIndex]
     }
   }
 }
