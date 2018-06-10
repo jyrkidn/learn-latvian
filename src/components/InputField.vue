@@ -2,7 +2,8 @@
   <div class="group">
     <input
       :value="value"
-      required
+      :required="required"
+      :class="{'filled-in': value.length > 0}"
       type="text"
       @input="$emit('input', $event.target.value)"
     >
@@ -25,6 +26,10 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+    required: {
+      type: Boolean,
+      default: true
     }
   }
 }
@@ -44,13 +49,13 @@ export default {
     width: 100%;
     border: none;
     border-bottom: 1px solid $primary;
+    background: none;
 
     &:focus {
       outline:none;
-
     }
 
-    &:focus ~ label, &:valid ~ label {
+    &:focus ~ label, &.filled-in ~ label {
       top: -20px;
       font-size: 14px;
       color: $accent;
@@ -63,10 +68,11 @@ export default {
     &:focus ~ .highlight {
       animation: inputHighlighter 0.3s ease;
     }
+
   }
 
   label {
-    color: #999;
+    color: $accent;
     font-size: 18px;
     font-weight: normal;
     position: absolute;
@@ -107,6 +113,28 @@ export default {
     left: 0;
     pointer-events: none;
     opacity: 0.5;
+  }
+
+  &.inverted {
+    input {
+      border-bottom: 1px solid $secondary;
+      color: $secondary;
+
+      &:focus ~ label, &.filled-in ~ label {
+        color: $secondary;
+      }
+    }
+
+    label {
+      color: $secondary;
+    }
+
+    .bar {
+
+      &:before, &:after {
+        background: $secondary;
+      }
+    }
   }
 }
 

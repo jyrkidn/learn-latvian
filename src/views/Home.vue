@@ -25,16 +25,23 @@
       </swiper>
     </main>
     <footer>
-      <icon-button @click="setCompleted">
+      <icon-button
+        v-if="translations.length > 0"
+        @click="setCompleted">
         <check-icon />
       </icon-button>
-      <icon-button @click="editTranslation">
+      <icon-button
+        v-if="translations.length > 0"
+        @click="editTranslation">
         <pencil-icon />
       </icon-button>
-      <icon-button @click="addTranslation">
+      <icon-button
+        @click="addTranslation">
         <plus-icon />
       </icon-button>
-      <icon-button @click="deleteTranslation">
+      <icon-button
+        v-if="translations.length > 0"
+        @click="deleteTranslation">
         <trash-icon />
       </icon-button>
     </footer>
