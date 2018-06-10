@@ -10,8 +10,11 @@ cache:
 pages:
   script:
     - npm run build
+    - rm -r public
+    - cp -r dist public
+    - cp public/index.html public/404.html
   artifacts:
     paths:
-      - dist
+      - public
   only:
     - master
