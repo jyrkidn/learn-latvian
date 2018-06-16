@@ -27,20 +27,24 @@
     <footer>
       <icon-button
         v-if="translations.length > 0"
+        label="Set completed"
         @click="setCompleted">
         <check-icon />
       </icon-button>
       <icon-button
         v-if="translations.length > 0"
+        label="Edit translation"
         @click="editTranslation">
         <pencil-icon />
       </icon-button>
       <icon-button
+        label="Add translation"
         @click="addTranslation">
         <plus-icon />
       </icon-button>
       <icon-button
         v-if="translations.length > 0"
+        label="Delete translation"
         @click="deleteTranslation">
         <trash-icon />
       </icon-button>
@@ -58,11 +62,11 @@
 <script>
 import PlayItem from '@/components/PlayItem'
 import IconButton from '@/components/IconButton'
-import 'swiper/dist/css/swiper.css'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import { CheckIcon, PencilIcon, PlusIcon, TrashIcon } from '@/components/icons'
-import TranslationDialog from '@/components/Dialog'
 import { getUncompletedTranslations, updateTranslation, deleteTranslation } from '../db'
+
+const TranslationDialog = () => import('@/components/Dialog')
 
 export default {
   name: 'Home',

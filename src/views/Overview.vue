@@ -53,7 +53,8 @@
             <input-field
               v-if="translation.edit"
               v-model="translationData.lv"
-              label=""
+              class="inverted hide-label"
+              label="Latvian"
             />
             <span v-else>
               {{ translation.lv }}
@@ -63,7 +64,8 @@
             <input-field
               v-if="translation.edit"
               v-model="translationData.en"
-              label=""
+              class="inverted hide-label"
+              label="English"
             />
             <span v-else>
               {{ translation.en }}
@@ -85,21 +87,25 @@
           <td>
             <button
               v-if="translation.edit"
+              aria-label="Submit translation"
               @click="submitTranslation(translation, index)">
               <check-icon />
             </button>
             <button
               v-if="translation.edit"
+              aria-label="Cancel translation"
               @click="cancelTranslation(translation)">
               <close-icon />
             </button>
             <button
               v-if="!translation.edit"
+              aria-label="Edit translation"
               @click="editTranslation(translation)">
               <pencil-icon />
             </button>
             <button
               v-if="!translation.edit"
+              aria-label="Delete translation"
               @click="deleteTranslation(translation, index)">
               <trash-icon />
             </button>

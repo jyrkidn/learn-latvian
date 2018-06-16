@@ -11,7 +11,10 @@
         {{ translation[answer] }}
       </span>
       <span v-else>
-        <icon-button @click="showAnswer = true">
+        <icon-button
+          label="Show Answer"
+          @click="showAnswer = true"
+        >
           <eye-icon />
         </icon-button>
       </span>

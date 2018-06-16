@@ -1,15 +1,8 @@
 import Dexie from 'dexie'
 
-const translationsFile = () => import('./translations')
-
 const db = new Dexie('latvian')
 db.version(1).stores({
   translations: '++id, lv, en, completed'
-})
-
-db.on('populate', async () => {
-  const translations = await translationsFile()
-  db.translations.bulkAdd(translations.default.items)
 })
 
 export default db

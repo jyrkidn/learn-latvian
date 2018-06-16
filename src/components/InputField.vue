@@ -4,12 +4,13 @@
       :value="value"
       :required="required"
       :class="{'filled-in': value.length > 0}"
+      :id="id"
       type="text"
       @input="$emit('input', $event.target.value)"
     >
     <span class="highlight" />
     <span class="bar" />
-    <label>
+    <label :for="id">
       {{ label }}
     </label>
   </div>
@@ -31,16 +32,32 @@ export default {
       type: Boolean,
       default: true
     }
+  },
+  data () {
+    return {
+      id: 'input-' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+/**
+ * Possible classes:
+ *  - hide-label
+ *  - inverted
+ */
 @import '../assets/styles/variables';
 
 .group {
   position: relative;
   margin-bottom: 45px;
+
+  &.hide-label {
+    label {
+      display: none;
+    }
+  }
 
   input {
     font-size: 18px;

@@ -1,5 +1,6 @@
 <template>
   <button
+    :aria-label="label"
     :class="{ squared: squared }"
     @click="onClick"
   >
@@ -13,6 +14,10 @@ export default {
     squared: {
       type: Boolean,
       default: true
+    },
+    label: {
+      type: String,
+      default: 'icon-button'
     }
   },
   methods: {
@@ -66,17 +71,6 @@ button {
     background-color: lighten($secondary, 8%);
   }
 
-  i {
-    display: inline-block;
-    float: none;
-    width: inherit;
-    margin: 0;
-    font-size: inherit;
-    text-align: center;
-    line-height: none;
-    vertical-align: middle;
-  }
-
   &.btn-link {
     box-shadow: none !important;
     background-color: transparent !important;
@@ -86,12 +80,6 @@ button {
       background-color: transparent !important;
       box-shadow: none !important;
     }
-  }
-
-  &.big {
-    width: 55px;
-    height: 195px;
-    margin-top: -22px;
   }
 }
 </style>

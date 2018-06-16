@@ -23,6 +23,7 @@
           <icon-button
             :squared="false"
             class="btn-link"
+            label="cancel"
             type="reset"
             @click="cancel"
           >
@@ -31,6 +32,7 @@
           <icon-button
             :squared="false"
             class="btn-link"
+            label="save"
             type="submit"
           >
             Save
@@ -42,8 +44,8 @@
 </template>
 
 <script>
-import InputField from './InputField'
-import IconButton from './IconButton'
+const InputField = () => import('./InputField')
+const IconButton = () => import('./IconButton')
 
 export default {
   name: 'Dialog',

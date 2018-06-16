@@ -22,10 +22,5 @@ export default {
 svg {
   width: 24px;
   height: 24px;
-
-  &.big {
-    width: 55px;
-    height: 195px;
-  }
 }
 </style>
